@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
 import logo from "./logo2.png";
+import loopText from "./LOOP_text.png";
 import Home1 from "./Home1.png";
 import Home2 from "./Home2.png";
 import Home3 from "./Home3.png";
@@ -52,7 +53,7 @@ export default function Home() {
             className="screen"
             style={{
                 background: isLast
-                    ? "linear-gradient(160deg, #f0fff6 0%, #03C75A 100%)"
+                    ? "linear-gradient(180deg, #f0fff6 50%, #03C75A 200%)"
                     : "#ffffff",
                 display: "flex",
                 flexDirection: "column",
@@ -75,7 +76,7 @@ export default function Home() {
                 letterSpacing: 0.2,
             }}
         >
-          시작
+          
         </span>
                 {/* 진행 바 */}
                 <div style={{ display: "flex", gap: 4 }}>
@@ -89,12 +90,8 @@ export default function Home() {
                                 borderRadius: 999,
                                 background:
                                     i <= current
-                                        ? isLast
-                                            ? "white"
-                                            : "var(--green-primary)"
-                                        : isLast
-                                            ? "rgba(255,255,255,0.3)"
-                                            : "var(--gray-200)",
+                                        ? "var(--green-primary)"
+                                        : "var(--gray-200)",
                                 cursor: "pointer",
                                 transition: "background 0.3s ease",
                             }}
@@ -125,9 +122,9 @@ export default function Home() {
                         fontWeight: 800,
                         letterSpacing: -0.8,
                         lineHeight: 1.35,
-                        marginBottom: 10,
+                        marginBottom: 20,
                         whiteSpace: "pre-line",
-                        color: isLast ? "white" : "var(--gray-900)",
+                        color: "#000000",
                     }}
                 >
                     {slide.title}
@@ -153,34 +150,29 @@ export default function Home() {
                 {slide.logo ? (
                     <div
                         style={{
-                            position: "relative",
-                            width: 260,
-                            height: 260,
                             display: "flex",
+                            flexDirection: "column",
                             alignItems: "center",
-                            justifyContent: "center",
+                            gap: 8,
                         }}
                     >
-                        {/* 배경 원 */}
-                        <div
+                        <img
+                            src={loopText}
+                            alt="LOOP"
                             style={{
-                                position: "absolute",
-                                width: 220,
-                                height: 220,
-                                borderRadius: "50%",
-                                background: "rgba(255,255,255,0.2)",
+                                width: 320,
+                                objectFit: "contain",
+                                marginBottom: 30,
                             }}
                         />
                         <img
                             src={logo}
-                            alt="LOOP"
+                            alt="globe"
                             style={{
-                                width: 200,
-                                height: 200,
-                                borderRadius: 32,
+                                width: 300,
+                                height: 300,
                                 objectFit: "contain",
-                                position: "relative",
-                                zIndex: 1,
+                                marginBottom: 10,
                             }}
                         />
                     </div>
@@ -236,9 +228,6 @@ export default function Home() {
                 <button
                     className="btn btn-primary"
                     onClick={goNext}
-                    style={
-                        isLast ? { background: "white", color: "var(--green-dark)" } : {}
-                    }
                 >
                     {isLast ? "시작하기" : "다음"}
                 </button>
