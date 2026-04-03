@@ -67,18 +67,13 @@ export default function Signup() {
         <span>9:41</span>
       </div>
 
-      {/* 뒤로가기 + 건너뛰기 */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 24px 0" }}>
+      {/* 뒤로가기 */}
+      <div style={{ padding: "8px 24px 0" }}>
         <button className="back-btn" style={{ padding: 0 }} onClick={goBack}>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
             <path d="M12.5 15L7.5 10L12.5 5" stroke="#495057" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </button>
-        {step < TOTAL_STEPS && (
-          <button onClick={() => setStep(step + 1)} style={{ background: "none", border: "none", fontSize: 14, color: "var(--gray-400)", cursor: "pointer", fontFamily: "var(--font)" }}>
-            건너뛰기
-          </button>
-        )}
       </div>
 
       <div className="screen-body" style={{ paddingTop: 32 }}>
