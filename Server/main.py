@@ -1,6 +1,8 @@
+import json
 import uvicorn
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from pydantic import BaseModel
@@ -32,18 +34,30 @@ async def lifespan(_app: FastAPI):
     yield
 
 app = FastAPI(title="Semothon 9 API", lifespan=lifespan)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.include_router(auth_router.router)
 
 # --- Pydantic 스키마 (데이터 입출력 형식) ---
 class UserUpdate(BaseModel):
     name: Optional[str] = None
     profile_image: Optional[str] = None
+    birth: Optional[str] = None
+    gender: Optional[str] = None
+    interests: Optional[List[str]] = None
 
 class UserResponse(BaseModel):
     id: int
     name: str
     profile_image: str
     points: int
+    birth: Optional[str] = None
+    gender: Optional[str] = None
+    interests: Optional[List[str]] = None
     class Config: from_attributes = True
 
 class RecordResponse(BaseModel):
@@ -105,13 +119,19 @@ def read_user_me(current_user: models.User = Depends(get_current_user)):
     return current_user
 
 # [PUT] 프로필 수정
-@app.put("/users/me", response_model=UserResponse, tags=["Users"])
+@app.put("/users/me", tags=["Users"])
 def update_user_me(obj_in: UserUpdate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
     if obj_in.name: current_user.name = obj_in.name
     if obj_in.profile_image: current_user.profile_image = obj_in.profile_image
+    if obj_in.birth: current_user.birth = obj_in.birth
+    if obj_in.gender: current_user.gender = obj_in.gender
+    if obj_in.interests is not None: current_user.interests = json.dumps(obj_in.interests, ensure_ascii=False)
     db.commit()
     db.refresh(current_user)
-    return current_user
+    return {
+        **{c.name: getattr(current_user, c.name) for c in current_user.__table__.columns},
+        "interests": json.loads(current_user.interests) if current_user.interests else [],
+    }
 
 # [DELETE] 회원 탈퇴
 @app.delete("/users/me", tags=["Users"])

@@ -21,7 +21,7 @@ const EMOJIS = [
 export default function Profile() {
   const navigate = useNavigate();
   const location = useLocation(); // ✅ 복구
-  const { email } = location.state || {}; // ✅ Signup에서 넘어오는 state
+  const { email, user_id } = location.state || {}; // ✅ Signup에서 넘어오는 state
 
   const [step, setStep] = useState(1);
   const [name, setName] = useState("");
@@ -63,33 +63,33 @@ export default function Profile() {
     setShowCustomInput(false);
   };
   const handleSubmit = async () => {
-    const birthStr = `${birth.y}-${birth.m}-${birth.d}`;
-
-    const data = {
-      email,
-      name,
-      birth: birthStr,
-      gender,
-      interests,
-      emoji,
-    };
-
     try {
-      const res = await fetch("http://localhost:8080/auth/register", {
-        method: "POST",
+      const birthStr = `${birth.y}-${birth.m.padStart(2, "0")}-${birth.d.padStart(2, "0")}`;
+      const res = await fetch(`http://127.0.0.1:8000/users/me?user_id=${user_id}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          name,
+          profile_image: emoji,
+          birth: birthStr,
+          gender,
+          interests,
+        }),
       });
 
-      const result = await res.json();
-      console.log("회원가입 성공:", result);
+      if (!res.ok) {
+        const err = await res.json();
+        alert(err.detail || "프로필 저장에 실패했습니다.");
+        return;
+      }
 
       navigate("/home");
 
     } catch (err) {
       console.error("에러:", err);
+      alert("서버에 연결할 수 없습니다.");
     }
   };
   const canNext = () => {

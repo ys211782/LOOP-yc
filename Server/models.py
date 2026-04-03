@@ -32,6 +32,11 @@ class User(Base):
     streak = Column(Integer, default=0)
     badge = Column(String, nullable=True)
     
+    # 프로필 추가 정보
+    birth = Column(String, nullable=True)        # "YYYY-MM-DD"
+    gender = Column(String, nullable=True)        # "남자" / "여자" / "기타"
+    interests = Column(String, nullable=True)     # JSON 배열 문자열
+
     # 가입일 (서버 시간 자동 기록)
     join_date = Column(DateTime(timezone=True), server_default=func.now())
 
